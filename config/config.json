@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "alrfati123",
+    "database": "BackTask",
+    "host": "localhost",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "test": {
+    "username": "postgres",
+    "password": "alrfati123",
+    "database": "BackTask",
+    "host": "localhost",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "production": {
+    "username": "postgres",
+    "password": "alrfati123",
+    "database": "BackTask",
+    "host": "localhost",
+    "dialect": "postgres",
+    "logging": false
+  }
+}
