@@ -1,7 +1,6 @@
-let chai = require("chai");
-let chaiHttp = require("chai-http");
-let server = require("../index");
-
+import chai from 'chai'
+import chaiHttp from 'chai-http'
+import {server} from '../src/index.mjs';
 // Assertion Style
 chai.should();
 chai.use(chaiHttp);

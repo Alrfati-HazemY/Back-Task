@@ -1,4 +1,4 @@
-module.exports = (db, type) => {
+export const UserSchema = (db, type) => {
     return db.define('users', {
       id: {
         type: type.INTEGER,
@@ -27,5 +27,5 @@ module.exports = (db, type) => {
     {
         timestamps : false
       }
-    )
+    )   
 }

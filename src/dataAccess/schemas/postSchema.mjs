@@ -1,4 +1,4 @@
-module.exports = (db,type) => {
+export const PostSchema = (db,type) => {
     return db.define('posts',{
         id : {
             type : type.INTEGER,
@@ -12,6 +12,15 @@ module.exports = (db,type) => {
         content : {
             type : type.STRING,
             allowNull : false,
+        },
+        userId: {
+            type: type.INTEGER,
+            references: {
+                model: 'users',
+                key: 'id'
+            },
+            onUpdate: 'cascade',
+            onDelete: 'cascade'
         }
     },
     {
