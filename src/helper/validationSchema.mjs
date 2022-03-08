@@ -7,10 +7,7 @@ return async (req,res,next) => {
       next();
     }
     catch(erorr) {
-      res.json({
-        status : 404,
-        message : erorr.message
-      })
+      res.status(404).send(erorr.message)
     }
   }}
 
