@@ -1,77 +1,49 @@
-import { PostModel } from "../models/index.mjs";
+import { PostModel } from "../models/postModel.mjs";
 import { UserModel } from "../models/userModel.mjs";
 
 export const UserRepo = {
   list: async () => {
-    try {
-      const users = await UserModel.findAll();
-      return users;
-    } catch (error) {
-      return error.message;
-    }
+    const users = await UserModel.findAll();
+    return users;
   },
-  get: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const user = await UserModel.findOne({ where: { id: id } });
-      return user;
-    } catch (error) {
-      return error.message;
-    }
+  get: async (id) => {
+    const user = await UserModel.findByPk(id);
+    return user === null ? {} : user;
   },
-  create: async (req, res) => {
-    try {
-      const user = await UserModel.create(req.body);
-      return user;
-    } catch (error) {
-      return error.message;
-    }
+  create: async (userData) => {
+    const user = await UserModel.create(userData);
+    return user;
   },
-  update: async (req, res) => {
-    try {
-      let { username, email, password } = req.body;
-      let { id } = req.params;
-      const user = await UserModel.update({
+  update: async (id, userData) => {
+    let { username, email, password } = userData;
+    let user = await UserModel.update(
+      {
         username: username,
         email: email,
         password: password,
       },
-      {where : {id : id},
-      returning : true,
-      plain: true
-    },
-      );
-      return user[1].dataValues;
-    } catch (error) {
-      return error.message;
-    }
+      { where: { id: id }, returning: true, plain: true }
+    );
+    user = await UserRepo.get(id);
+    return user;
+    //return user[1].dataValues;
   },
-  delete : async (req,res) => {
-    try {
-      let { id } = req.params;
-      await UserModel.destroy({  
-      where : {id : id}
-    },
-      );
-      return 204;
-    } catch (error) {
-      return error.message;
-    }
+  delete: async (id) => {
+    await UserModel.destroy({
+      where: { id: id },
+    });
+    return 204;
   },
-  getPosts : async(req,res) => {
-    try {
-      let {id} = req.params;
-      const userPosts = await UserModel.findOne({
-        where : {id : id},
-        include : [{
-          model : PostModel,
-          where : {userId : id}
-        }]
-      })
-      return userPosts;
-    }
-    catch (error) {
-      return error.message;
-    }
-  }
+  getPosts: async (id) => {
+    const userPosts = await UserModel.findOne({
+      where: { id: id },
+      include: [
+        {
+          model: PostModel,
+          where: { userId: id },
+        },
+      ],
+    });
+    return userPosts;
+  },
 };

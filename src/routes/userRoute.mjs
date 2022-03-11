@@ -10,27 +10,33 @@ router.route("/")
   res.json(users);
 })
 .post(validation(userSchemaValidation),async(req,res)=>{
-  const user = await UserRepo.create(req,res);
-  res.json(user);
+  const userData = req.body
+  const user = await UserRepo.create(userData);
+  res.status(201).json(user);
 })
 
 router.route("/:id")
 .get(async(req,res)=>{
-  const user = await UserRepo.get(req);
-  res.send(user);
+  const { id } = req.params;
+  const user = await UserRepo.get(id);
+  res.json(user);
 })
-.put(async(req,res)=>{
-  const user = await UserRepo.update(req);
-  res.send(user);
+.put(validation(userSchemaValidation),async(req,res)=>{
+  let userData = req.body;
+  const { id } = req.params;
+  const user = await UserRepo.update(id,userData);
+  res.json(user);
 })
 .delete(async(req,res)=>{
-  const user = await UserRepo.delete(req);
+  const { id } = req.params;
+  const user = await UserRepo.delete(id);
   res.sendStatus(user);
 })
 
 router.route("/:id/posts").get(async(req,res)=>{
-  const userPosts = await UserRepo.getPosts(req);;
-  res.send(userPosts);
+  const {id} = req.params;
+  const userPosts = await UserRepo.getPosts(id);
+  res.json(userPosts);
 });
 
 export {router as UserRouter};

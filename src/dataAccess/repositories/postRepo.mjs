@@ -1,79 +1,51 @@
 import { PostModel } from "../models/postModel.mjs";
 import { CommentModel } from "../models/commentModel.mjs";
 export const PostRepo = {
-  list: async (req, res) => {
+  list: async () => {
+    const posts = await PostModel.findAll();
+    return posts;
+  },
+  get: async (id) => {
+      const post = await PostModel.findOne({ where: { id: id } });
+      return post === null ? {} : post;
+  },
+  create: async (postData) => {
     try {
-      const posts = await PostModel.findAll();
-      return posts;
+      const post = await PostModel.create(postData);
+      return {post , status:201};
     } catch (error) {
-      return error.message;
+      return {error , status:200};
     }
   },
-  get : async (req,res) => {
-    try {
-      let {id} = req.params
-      const post = await PostModel.findOne({where : {id : id}})
+  update: async (id,postData) => {
+      const {title  ,content} = postData
+      let post = await PostModel.update(
+        {
+          title: title,
+          content: content,
+        },
+        { where: { id: id }, returning: true, plain: true }
+      );
+      post = await PostRepo.get(id);
       return post;
-    }
-    catch(error) {
-      return error.message
-    }
+      // return post[1].dataValues;
   },
-  create :  async (req,res) => {
-    try {
-      const post = await PostModel.create(req.body)
-      return post;
-    }
-    catch(error) {
-      return error.message
-    }
-  },
-  put : async(req,res) => {
-    try {
-      let {id} = req.params;
-      let {title , content} = req.body;
-      const post = await PostModel.update({
-        title : title,
-        content : content,
-      },
-        {where : {id : id},
-        returning : true,
-        plain: true
-      }
-      )
-      return post[1].dataValues;
-    }
-    catch(error) {
-      return error.message
-    }
-  },
-  delete : async(req,res) => {
-    try {
-      const {id} = req.params;
+  delete: async (id) => {
       await PostModel.destroy({
-        where : {id : id}
+        where: { id: id },
       });
       return 204;
-    }
-    catch(error) {
-      return error.message;
-    }
   },
-  getComments : async(req,res)=> {
-    try {
-      let {id} = req.params;
-      console.log(id)
+  getComments: async (id) => {
       const postComments = await PostModel.findOne({
-        where : {id : id},
-        include : [{
-          model : CommentModel,
-          where : {postId : id}
-        }]
-      })
+        where: { id: id },
+        include: [
+          {
+            model: CommentModel,
+            where: { postId: id },
+          },
+        ],
+      });
       return postComments;
-    }
-    catch(error) {
-      return error.message;
-    }
-  }
+  },
 };
